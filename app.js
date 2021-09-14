@@ -1,13 +1,21 @@
-var express = require('express');
-var path = require('path');
-var cookieParser = require('cookie-parser');
-var logger = require('morgan');
+require('dotenv').config(); // added package dot env
 
-var indexRouter = require('./routes/index');
-var usersRouter = require('./routes/users');
+const express = require('express');
+const cors = require('cors');
+const path = require('path');
+const cookieParser = require('cookie-parser');
+const logger = require('morgan');
 
-var app = express();
+const indexRouter = require('./routes/index');
+const authRouter = require('./routes/auth');
 
+
+const verifyToken = require('./middlewares/verifyToken'); //For Verify User Token Login
+const role= require('./middlewares/permission'); //For Verify User Role Login
+
+const app = express();
+
+app.use(cors()); // CORS
 app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
@@ -15,6 +23,6 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', indexRouter);
-app.use('/users', usersRouter);
+app.use('/auth', authRouter);
 
 module.exports = app;
