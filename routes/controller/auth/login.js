@@ -54,7 +54,7 @@ module.exports = async (req, res) =>{
 
     //Check status user
     const status = user.status;
-    if(status === 'non-active'){
+    if(status === false){
         return res.status(404).json({
             status: 'error',
             message: 'This account has been deactivated by admin'

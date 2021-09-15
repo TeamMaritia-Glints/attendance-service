@@ -30,10 +30,9 @@ module.exports = (sequelize, DataTypes) =>{
             defaultValue: 'employee'
         },
         status:{
-            type: DataTypes.ENUM,
-            values: ['active','non-active'],
+            type: DataTypes.BOOLEAN,
             allowNull: false,
-            defaultValue: 'active'
+            defaultValue: true
         },
         createdAt:{
             field: 'created_at',
