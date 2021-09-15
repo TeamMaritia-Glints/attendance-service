@@ -9,6 +9,7 @@ module.exports = {
       email:'admin@email.com',
       role:'admin',
       status:true,
+      active:true,
       password: await bcrypt.hash('admin123',10),
       created_at: new Date(),
       updated_at: new Date()
@@ -18,6 +19,7 @@ module.exports = {
         email:'user@email.com',
         role:'employee',
         status:true,
+        active:true,
         password: await bcrypt.hash('user123',10),
         created_at: new Date(),
         updated_at: new Date()

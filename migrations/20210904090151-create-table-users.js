@@ -30,6 +30,10 @@ module.exports = {
         values: ['admin','employee'],
         allowNull: false
       },
+      active:{
+        type: Sequelize.BOOLEAN,
+        allowNull: false
+      },
       status:{
         type: Sequelize.BOOLEAN,
         allowNull: false

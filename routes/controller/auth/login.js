@@ -61,6 +61,15 @@ module.exports = async (req, res) =>{
         });
     }
 
+    //Check active user
+    const active = user.active;
+    if(active === false){
+        return res.status(404).json({
+            status: 'error',
+            message: "Your account is not active, please contact to administrator"
+        });
+    }
+
     //Select data for Success Login or Pass All Validation
     const data = await User.findOne({
         where: { email: req.body.email}, 

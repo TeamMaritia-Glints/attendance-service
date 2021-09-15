@@ -29,6 +29,11 @@ module.exports = (sequelize, DataTypes) =>{
             allowNull: false,
             defaultValue: 'employee'
         },
+        active:{
+            type: DataTypes.BOOLEAN,
+            allowNull: false,
+            defaultValue: true
+        },
         status:{
             type: DataTypes.BOOLEAN,
             allowNull: false,
