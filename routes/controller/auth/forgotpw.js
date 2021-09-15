@@ -60,7 +60,7 @@ module.exports = async (req, res) =>{
     //Execute query
     const createResetToken = await ForgotPassword.create(data);
 
-    const link = `${FRONT_END_URL_FORGOT_PASSWORD}/passwordReset?token=${resetToken}&id=${user.id}`;
+    const link = `${FRONT_END_URL_FORGOT_PASSWORD}?token=${resetToken}&id=${user.id}`;
 
     //Send Email
     sendEmail(user.email,"Password Reset Request",{name: user.name,link: link,},"./template/requestResetPassword.handlebars");
