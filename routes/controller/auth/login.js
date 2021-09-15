@@ -17,7 +17,7 @@ module.exports = async (req, res) =>{
     
     //Validate Data Request
     const schema = {
-        email: { type: "string", empty:false},
+        email: { type: "email", empty:false},
         password: { type: "string", min: 6, optional: false} ,
     }
     const validate= v.validate(req.body, schema);
