@@ -57,7 +57,7 @@ module.exports = async (req, res) =>{
     if(status === false){
         return res.status(404).json({
             status: 'error',
-            message: 'This account has been deactivated by admin'
+            message: "You don't have authorized to access the system, please contact to administrator"
         });
     }
 
