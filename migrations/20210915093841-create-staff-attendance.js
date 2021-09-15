@@ -20,13 +20,14 @@ module.exports = {
         allowNull: false,
         type: Sequelize.FLOAT
       },
-      idStaff: {
+      employeeId: {
         allowNull: false,
         type: Sequelize.INTEGER
       },
       action: {
-        type: Sequelize.STRING,
-        allowNull: true
+        allowNull: false,
+        type: Sequelize.ENUM,
+        values: ['CHECK-IN', 'CHECK-OUT']
       },
       createdAt: {
         allowNull: false,

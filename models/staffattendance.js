@@ -18,8 +18,8 @@ module.exports = (sequelize, DataTypes) => {
     timeStamp: DataTypes.DATE,
     location: DataTypes.STRING,
     distanceFromOffice: DataTypes.FLOAT,
-    idStaff: DataTypes.INTEGER,
-    action: DataTypes.STRING
+    employeeId: DataTypes.INTEGER,
+    action: DataTypes.ENUM 
   }, {
     sequelize,
     modelName: 'StaffAttendance',
