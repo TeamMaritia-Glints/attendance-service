@@ -14,12 +14,41 @@ module.exports = (sequelize, DataTypes) => {
     }
   };
   StaffAttendance.init({
-    id: DataTypes.INTEGER,
-    timeStamp: DataTypes.DATE,
-    location: DataTypes.STRING,
-    distanceFromOffice: DataTypes.FLOAT,
-    employeeId: DataTypes.INTEGER,
-    action: DataTypes.ENUM 
+    id: {
+      allowNull: false,
+      autoIncrement: true,
+      primaryKey: true,
+      type: DataTypes.INTEGER
+    },      
+    timestamp: {
+      allowNull: false,
+      type: DataTypes.DATE
+    },
+    location: {
+      allowNull: false,
+      type: DataTypes.STRING
+    },
+    distanceFromOffice: {
+      allowNull: false,
+      type: DataTypes.FLOAT
+    },
+    employeeId: {
+      allowNull: false,
+      type: DataTypes.INTEGER
+    },
+    action: {
+      allowNull: false,
+      type: DataTypes.ENUM,
+      values: ['CHECK-IN', 'CHECK-OUT']
+    },
+    createdAt: {
+      allowNull: false,
+      type: DataTypes.DATE
+    },
+    updatedAt: {
+      allowNull: false,
+      type: DataTypes.DATE
+    }
   }, {
     sequelize,
     modelName: 'StaffAttendance',

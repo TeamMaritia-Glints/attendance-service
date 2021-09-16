@@ -8,7 +8,7 @@ module.exports = {
         primaryKey: true,
         type: Sequelize.INTEGER
       },      
-      timeStamp: {
+      timestamp: {
         allowNull: false,
         type: Sequelize.DATE
       },
