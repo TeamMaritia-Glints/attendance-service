@@ -8,26 +8,30 @@ module.exports = {
         autoIncrement: true,
         primaryKey: true,
         allowNull: false
-       },
-       name:{
+      },
+      name:{
          type: Sequelize.STRING,
          allowNull: false
-       },
-       email:{
+      },
+      email:{
          type: Sequelize.STRING,
          allowNull: false
-       },
-       password:{
+      },
+      password:{
          type: Sequelize.STRING,
          allowNull: false
-       },
-       refresh_token:{
+      },
+      refresh_token:{
         type: Sequelize.TEXT,
         allowNull: true
-       },
-       role:{
+      },
+      role:{
         type: Sequelize.ENUM,
         values: ['admin','employee'],
+        allowNull: false
+      },
+      active:{
+        type: Sequelize.BOOLEAN,
         allowNull: false
       },
       status:{

@@ -1,63 +1,57 @@
 module.exports = (sequelize, DataTypes) =>{
-    const User = sequelize.define('User', {
+    const Office = sequelize.define('Office', {
         id: {
             type: DataTypes.INTEGER,
             autoIncrement: true,
             primaryKey: true,
             allowNull: false
-           },
-        name:{
-             type: DataTypes.STRING,
-             allowNull: false
-           },
-        email:{
-            type: DataTypes.STRING,
-            allowNull: false,
-            unique: true
         },
-        password:{
+        name:{
             type: DataTypes.STRING,
             allowNull: false
-        },
-        refresh_token:{
+        },   
+        address:{
             type: DataTypes.TEXT,
             allowNull: true
         },
-        role:{
-            type: DataTypes.ENUM,
-            values: ['admin','employee'],
-            allowNull: false,
-            defaultValue: 'employee'
+        latitude:{
+            type: DataTypes.TEXT,
+            allowNull: false
         },
-        active:{
-            type: DataTypes.BOOLEAN,
-            allowNull: false,
-            defaultValue: true
+        longitude:{
+            type: DataTypes.TEXT,
+            allowNull: false
         },
         status:{
             type: DataTypes.BOOLEAN,
             allowNull: false,
-            defaultValue: false
+            defaultValue: true
+        },
+        create_uid: {
+            type: DataTypes.INTEGER,
+            allowNull: false
         },
         createdAt:{
             field: 'created_at',
             type : DataTypes.DATE,
             allowNull: true
-            },
+        },
         updatedAt:{
             field: 'updated_at',
             type : DataTypes.DATE,
             allowNull: true
         }
     }, {
-        tableName: 'users',
+        tableName: 'office',
         timestamps: true
     });
-    User.associate = function(models) {
+    Office.associate = function(models) {
         // associations can be defined here
-        User.hasMany(models.Office, {
+        Office.belongsTo(models.User, {
           foreignKey: 'create_uid',
+          onDelete: 'CASCADE'
         })
       };
-    return User;
+
+    return Office;
 }
