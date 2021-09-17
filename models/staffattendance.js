@@ -34,7 +34,11 @@ module.exports = (sequelize, DataTypes) => {
     },
     employeeId: {
       allowNull: false,
-      type: DataTypes.INTEGER
+      type: DataTypes.INTEGER,
+      references: {
+        model: 'users', 
+        key: 'id', 
+     }
     },
     action: {
       allowNull: false,
