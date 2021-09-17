@@ -23,6 +23,6 @@ router.put('/updatepw', verifyToken, authController.updatepw);
 router.post('/forgotpw', authController.forgotpw);
 
 /* PUT user Request Reset Password. */
-router.put('/passwordReset', authController.pwReset);
+router.put('/passwordreset', authController.pwReset);
 
 module.exports = router;

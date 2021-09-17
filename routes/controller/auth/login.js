@@ -17,8 +17,8 @@ module.exports = async (req, res) =>{
     
     //Validate Data Request
     const schema = {
-        email: { type: "string", empty:false},
-        password: { type: "string", min: 6, optional: false} ,
+        email: { type: "email", empty:false},
+        password: { type: "string", min: 6, optional: false},
     }
     const validate= v.validate(req.body, schema);
 
@@ -54,10 +54,10 @@ module.exports = async (req, res) =>{
 
     //Check status user
     const status = user.status;
-    if(status === 'non-active'){
+    if(status === false){
         return res.status(404).json({
             status: 'error',
-            message: 'This account has been deactivated by admin'
+            message: "You don't have authorized to access the system, please contact to administrator"
         });
     }
 
