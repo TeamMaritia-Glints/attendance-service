@@ -1,2 +1,2 @@
-# attendance-service
-BE Repository For Attendance App
+# GlintsProject1
+Todo list apps
