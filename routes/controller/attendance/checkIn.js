@@ -8,7 +8,6 @@ const {Office} = require("../../../models")
 module.exports = async (req, res) => {
   //Validate Data
   const schema = {
-    employeeId: { type: "number", empty: false },
     timestamp: { type: "date", default: Date.now(), optional: true },
     location: {
       type: "object",
@@ -56,7 +55,7 @@ module.exports = async (req, res) => {
 
   //Define data parameter for register to database
   const data = {
-    employeeId: req.body.employeeId,
+    employeeId: req.user.data.id,
     timestamp: req.body.timestamp,
     location: JSON.stringify(req.body.location),
     action: action,
