@@ -3,6 +3,7 @@ const v = new Validator();
 const { StaffAttendance } = require("../../../models"); // Call Model StaffAttendance
 const checkDistance = require("./checkDistance");
 const isLocationValid = require("./isLocationValid");
+const {Office} = require("../../../models")
 
 module.exports = async (req, res) => {
   //Validate Data
@@ -34,7 +35,12 @@ module.exports = async (req, res) => {
     });
   }
 
-  const officeLocation = { longitude: 106.79733939910263, latitude: -6.271525601921822};
+  const office = await Office.findOne({
+    order: [
+      ['id']
+    ]
+  })
+  const officeLocation = {longitude: office.longitude, latitude: office.latitude};
   const distanceFromOffice = checkDistance(req.body.location, officeLocation);
   if (!isLocationValid(distanceFromOffice)) {
     res.status(400);
