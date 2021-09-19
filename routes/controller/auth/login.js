@@ -57,7 +57,16 @@ module.exports = async (req, res) =>{
     if(status === false){
         return res.status(404).json({
             status: 'error',
-            message: "You don't have authorized to access the system, please contact to administrator"
+            message: "Your account is not approved by admin, please contact to IT Center"
+        });
+    }
+
+    //Check active user
+    const active = user.active;
+    if(active === false){
+        return res.status(404).json({
+            status: 'error',
+            message: "Your account is not active, please contact to administrator"
         });
     }
 

@@ -9,6 +9,7 @@ const logger = require('morgan');
 const indexRouter = require('./routes/index');
 const authRouter = require('./routes/auth');
 const attendanceRouter = require('./routes/attendance');
+const officeRouter = require('./routes/office');
 
 
 const verifyToken = require('./middlewares/verifyToken'); //For Verify User Token Login
@@ -26,5 +27,6 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use('/', indexRouter);
 app.use('/auth', authRouter);
 app.use('/attendance', attendanceRouter);
+app.use('/office', verifyToken, officeRouter);
 
 module.exports = app;
