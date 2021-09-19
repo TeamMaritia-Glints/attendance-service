@@ -1,7 +1,8 @@
 const Validator = require("fastest-validator"); //Library Validator Request > Documentation coba check di google "npm fastest-validator"
 const v = new Validator();
-const {StaffAttendance} = require('../../../models');// Call Model StaffAttendance
-
+const { StaffAttendance } = require("../../../models"); // Call Model StaffAttendance
+const checkDistance = require("./checkDistance");
+const isLocationValid = require("./isLocationValid");
 
 module.exports = async (req, res) => {
   //Validate Data
@@ -12,8 +13,8 @@ module.exports = async (req, res) => {
       type: "object",
       strict: true,
       props: {
-        long: "number",
-        lat: "number",
+        longitude: "number",
+        latitude: "number",
       },
     },
     action: {
@@ -33,7 +34,19 @@ module.exports = async (req, res) => {
     });
   }
 
-  const action = req.body.action ? req.body.action:"CHECK-IN" ;
+  const officeLocation = { longitude: 106.79733939910263, latitude: -6.271525601921822};
+  const distanceFromOffice = checkDistance(req.body.location, officeLocation);
+  if (!isLocationValid(distanceFromOffice)) {
+    res.status(400);
+    return res.json({
+      status: "error",
+      message:
+        "jarak terlalu jauh dari kantor, jarak anda sebesar: " + 
+        distanceFromOffice +" m",
+    });
+  }
+
+  const action = req.body.action ? req.body.action : "CHECK-IN";
 
   //Define data parameter for register to database
   const data = {
@@ -58,9 +71,10 @@ module.exports = async (req, res) => {
     });
   } catch (err) {
     console.log(err);
+    res.status(500);
     return res.json({
       status: "error",
-      message: "gagal melakukan check-in"
-    }); 
+      message: "gagal melakukan check-in",
+    });
   }
 };
