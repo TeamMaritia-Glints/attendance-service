@@ -46,7 +46,7 @@ module.exports = async (req, res) =>{
     //Get data user
     const user = await User.findOne({
         where: { id: id},
-        attributes: ['id', 'name', 'email', 'role', 'status', 'active'],
+        attributes: ['id', 'name', 'role', 'status', 'active'],
     });
     
     //Return Message ID
