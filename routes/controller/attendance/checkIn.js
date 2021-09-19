@@ -54,7 +54,7 @@ module.exports = async (req, res) => {
     timestamp: req.body.timestamp,
     location: JSON.stringify(req.body.location),
     action: action,
-    distanceFromOffice: 0.0,
+    distanceFromOffice: distanceFromOffice,
     createdAt: Date.now(),
     updatedAt: Date.now(),
   };
