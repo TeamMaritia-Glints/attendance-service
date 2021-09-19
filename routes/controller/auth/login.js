@@ -1,5 +1,5 @@
 const bcrypt = require('bcrypt');//Library Hashing password
-const {User} = require('../../../models');
+const {User, Office} = require('../../../models');
 const Validator = require('fastest-validator');//Library Validator
 const v = new Validator();
 const jwt = require('jsonwebtoken'); //Library for convert user login to token
@@ -73,7 +73,11 @@ module.exports = async (req, res) =>{
     //Select data for Success Login or Pass All Validation
     const data = await User.findOne({
         where: { email: req.body.email}, 
-        attributes: ['id', 'name', 'email', 'role']
+        attributes: ['id', 'name', 'email', 'role'],
+        include: {
+            model: Office,
+            attributes: ['id', 'name', 'latitude', 'longitude']
+        }
     });
 
     

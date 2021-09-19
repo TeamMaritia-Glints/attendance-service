@@ -2,11 +2,17 @@ const {User, Office} = require('../../../models');
 
 module.exports = async (req, res) =>{
 
+    //Setup params
+    const status = req.query.status;
+
+    var whereStatement = {};
+    if(status)
+        whereStatement.status = status;
+
     //Get all data office
-    const user_id=req.user.data.id;
     const office = await Office.findAll({
-        where: { create_uid:user_id},
-        attributes: ['id', 'name', 'address', 'latitude', 'longitude'],
+        where: whereStatement,
+        attributes: ['id', 'name', 'address', 'latitude', 'longitude', 'status'],
         include: [{
             model: User,
                 attributes: ['id', 'name']
