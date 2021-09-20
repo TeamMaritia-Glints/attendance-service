@@ -6,5 +6,6 @@ const checkInController = require('./controller/attendance'); //Import Controlle
 
 /* POST employee check in request. */
 router.post("/check-in", verifyToken, checkInController.checkIn);
+router.post("/check-out", verifyToken, checkInController.checkOut);
 
 module.exports = router;
