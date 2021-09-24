@@ -53,5 +53,12 @@ module.exports = (sequelize, DataTypes) =>{
         })
       };
 
+    Office.associate = function(models) {
+        // associations can be defined here
+        Office.hasMany(models.User, {
+          foreignKey: 'office_id',
+        })
+      };
+
     return Office;
 }

@@ -10,6 +10,7 @@ const indexRouter = require('./routes/index');
 const authRouter = require('./routes/auth');
 const attendanceRouter = require('./routes/attendance');
 const officeRouter = require('./routes/office');
+const userManagementRouter = require('./routes/userManagement');
 
 
 const verifyToken = require('./middlewares/verifyToken'); //For Verify User Token Login
@@ -28,5 +29,6 @@ app.use('/', indexRouter);
 app.use('/auth', authRouter);
 app.use('/attendance', attendanceRouter);
 app.use('/office', verifyToken, officeRouter);
+app.use('/user', verifyToken, userManagementRouter);
 
 module.exports = app;
