@@ -18,14 +18,12 @@ module.exports = async (req, res) => {
       "checkInLocation",
       "checkOutTime",
       "checkOutLocation",
-      "User.name",
-      "User.email",
-      "User.role",
       "workingHour",
+      "workingHourView",
     ],
     include: {
       model: User,
-      attributes: [],
+      attributes: ["name", "email", "role"],
     },
     where: Sequelize.where(
       Sequelize.fn("date", Sequelize.col("checkInTime")),
@@ -33,7 +31,7 @@ module.exports = async (req, res) => {
       today
     ),
     //group:employeeId,
-    raw: true,
+    //raw: true,
   });
 
   res.status(200);

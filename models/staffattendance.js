@@ -54,6 +54,17 @@ module.exports = (sequelize, DataTypes) => {
         allowNull: true,
         type: DataTypes.INTEGER
       },
+      workingHourView: {
+        type: DataTypes.VIRTUAL,
+        get() {
+          const hour = parseInt(this.workingHour / 60);
+          const minute = this.workingHour % 60;
+          return `${hour} h ${minute} m`;
+        },
+        set(value) {
+          throw new Error("Do not try to set the `workingHourView` value!");
+        }
+      },
       createdAt: {
         allowNull: false,
         type: DataTypes.DATE,
