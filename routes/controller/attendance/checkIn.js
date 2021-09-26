@@ -3,25 +3,19 @@ const v = new Validator();
 const { StaffAttendance } = require("../../../models"); // Call Model StaffAttendance
 const checkDistance = require("./checkDistance");
 const isLocationValid = require("./isLocationValid");
-const {Office} = require("../../../models")
+const { Office } = require("../../../models");
 
 module.exports = async (req, res) => {
   //Validate Data
   const schema = {
-    timestamp: { type: "date", default: Date.now(), optional: true },
-    location: {
+    checkInTime: { type: "date", default: Date.now(), optional: true },
+    checkInLocation: {
       type: "object",
       strict: true,
       props: {
         longitude: "number",
         latitude: "number",
       },
-    },
-    action: {
-      type: "string",
-      items: "string",
-      enum: ["CHECK-IN", "CHECK-OUT"],
-      optional: true,
     },
   };
 
@@ -34,38 +28,45 @@ module.exports = async (req, res) => {
     });
   }
 
-  const office = await Office.findOne({
-    order: [
-      ['id']
-    ]
-  })
-  const officeLocation = {longitude: office.longitude, latitude: office.latitude};
-  const distanceFromOffice = checkDistance(req.body.location, officeLocation);
-  if (!isLocationValid(distanceFromOffice)) {
-    res.status(400);
-    return res.json({
-      status: "error",
-      message:
-        "jarak terlalu jauh dari kantor, jarak anda sebesar: " + 
-        distanceFromOffice +" m",
-    });
-  }
-
-  const action = req.body.action ? req.body.action : "CHECK-IN";
-
-  //Define data parameter for register to database
-  const data = {
-    employeeId: req.user.data.id,
-    timestamp: req.body.timestamp,
-    location: JSON.stringify(req.body.location),
-    action: action,
-    distanceFromOffice: distanceFromOffice,
-    createdAt: Date.now(),
-    updatedAt: Date.now(),
-  };
+  // const office = await Office.findOne({
+  //   order: [
+  //     ['id']
+  //   ]
+  // });
 
   try {
     //Execute query register
+    const office = req.user.data.Office;
+    //console.log(office);
+    const officeLocation = {
+      longitude: parseFloat(office.longitude),
+      latitude: parseFloat(office.latitude),
+    };
+    console.log(officeLocation);
+    console.log(req.body.checkInLocation);
+    const distanceFromOffice = checkDistance(
+      req.body.checkInLocation,
+      officeLocation
+    );
+    if (!isLocationValid(distanceFromOffice)) {
+      res.status(400);
+      return res.json({
+        status: "error",
+        message:
+          "jarak terlalu jauh dari kantor, jarak anda sebesar: " +
+          distanceFromOffice +
+          " m",
+      });
+    }
+
+    //Define data parameter for register to database
+    const data = {
+      employeeId: req.user.data.id,
+      checkInTime: req.body.checkInTime,
+      checkInLocation: JSON.stringify(req.body.checkInLocation),
+      createdAt: Date.now(),
+      updatedAt: Date.now(),
+    };
     const employeeCheckIn = await StaffAttendance.create(data);
 
     return res.json({
