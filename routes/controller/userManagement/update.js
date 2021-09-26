@@ -58,7 +58,9 @@ module.exports = async (req, res) =>{
     }
 
     //Variable hash password
+
 //    const password = await bcrypt.hash(req.body.password, 10);
+
 
     //Execute query update
     await user.update({
