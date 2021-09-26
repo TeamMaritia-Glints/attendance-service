@@ -3,13 +3,15 @@ const v = new Validator();
 const { StaffAttendance } = require("../../../models"); // Call Model StaffAttendance
 const checkDistance = require("./checkDistance");
 const isLocationValid = require("./isLocationValid");
+const calculateWorkingHour = require("./calculateWorkingHour");
 const { Office } = require("../../../models");
 const Sequelize = require("sequelize");
+
 
 module.exports = async (req, res) => {
   //Validate Data
   const schema = {
-    checkOutTime: { type: "date", default: Date.now(), optional: true },
+    checkOutTime: { type: "date", default: new Date() , optional: true, convert: true },
     checkOutLocation: {
       type: "object",
       strict: true,
@@ -68,10 +70,12 @@ module.exports = async (req, res) => {
       throw new Error("Tidak ada data Check-In pada hari ini");
     }
     //Define data parameter for register to database
+    const workingHour= calculateWorkingHour(checkInData.checkInTime, req.body.checkOutTime);
     const data = {
       employeeId: req.user.data.id,
       checkOutTime: req.body.checkOutTime,
       checkOutLocation: JSON.stringify(req.body.checkOutLocation),
+      workingHour: workingHour,
       updatedAt: Date.now(),
     };
 

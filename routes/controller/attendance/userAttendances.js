@@ -12,7 +12,17 @@ module.exports = async (req, res) => {
   const today = new Date().toISOString().slice(0, 10);
 
   const userAttendances = await StaffAttendance.findAll({
-    attributes: ["employeeId", "checkInTime", "checkInLocation","checkOutTime" ,"checkOutLocation","User.name", "User.email", "User.role"],
+    attributes: [
+      "employeeId",
+      "checkInTime",
+      "checkInLocation",
+      "checkOutTime",
+      "checkOutLocation",
+      "User.name",
+      "User.email",
+      "User.role",
+      "workingHour",
+    ],
     include: {
       model: User,
       attributes: [],
@@ -23,7 +33,7 @@ module.exports = async (req, res) => {
       today
     ),
     //group:employeeId,
-    raw: true
+    raw: true,
   });
 
   res.status(200);

@@ -50,6 +50,10 @@ module.exports = (sequelize, DataTypes) => {
         allowNull: true,
         type: DataTypes.ENUM("Approved", "Waiting for Approval","Declined"),
       },
+      workingHour: {
+        allowNull: true,
+        type: DataTypes.INTEGER
+      },
       createdAt: {
         allowNull: false,
         type: DataTypes.DATE,

@@ -8,7 +8,7 @@ const { Office } = require("../../../models");
 module.exports = async (req, res) => {
   //Validate Data
   const schema = {
-    checkInTime: { type: "date", default: Date.now(), optional: true },
+    checkInTime: { type: "date", default: Date.now(), optional: true, convert: true },
     checkInLocation: {
       type: "object",
       strict: true,

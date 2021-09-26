@@ -34,7 +34,11 @@ module.exports = {
       },         
       status: {
         allowNull: false,
-        type: Sequelize.ENUM("Approved", "Declined"),
+        type: Sequelize.ENUM("Approved","Waiting for Approval", "Declined"),
+      },
+      workingHour: {
+        allowNull: true,
+        type: Sequelize.INTEGER
       },
       createdAt: {
         allowNull: false,
