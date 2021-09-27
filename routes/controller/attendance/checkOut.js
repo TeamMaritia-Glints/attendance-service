@@ -3,25 +3,22 @@ const v = new Validator();
 const { StaffAttendance } = require("../../../models"); // Call Model StaffAttendance
 const checkDistance = require("./checkDistance");
 const isLocationValid = require("./isLocationValid");
-const {Office} = require("../../../models")
+const calculateWorkingHour = require("./calculateWorkingHour");
+const { Office } = require("../../../models");
+const Sequelize = require("sequelize");
+
 
 module.exports = async (req, res) => {
   //Validate Data
   const schema = {
-    timestamp: { type: "date", default: Date.now(), optional: true },
-    location: {
+    checkOutTime: { type: "date", default: new Date() , optional: true, convert: true },
+    checkOutLocation: {
       type: "object",
       strict: true,
       props: {
         longitude: "number",
         latitude: "number",
       },
-    },
-    action: {
-      type: "string",
-      items: "string",
-      enum: ["CHECK-IN", "CHECK-OUT"],
-      optional: true,
     },
   };
 
@@ -34,44 +31,60 @@ module.exports = async (req, res) => {
     });
   }
 
-  const office = await Office.findOne({
-    order: [
-      ['id']
-    ]
-  })
-  const officeLocation = {longitude: office.longitude, latitude: office.latitude};
-  const distanceFromOffice = checkDistance(req.body.location, officeLocation);
-  if (!isLocationValid(distanceFromOffice)) {
-    res.status(400);
-    return res.json({
-      status: "error",
-      message:
-        "jarak terlalu jauh dari kantor, jarak anda sebesar: " + 
-        distanceFromOffice +" m",
-    });
-  }
-
-  const action = req.body.action ? req.body.action : "CHECK-OUT";
-
-  //Define data parameter for register to database
-  const data = {
-    employeeId: req.user.data.id,
-    timestamp: req.body.timestamp,
-    location: JSON.stringify(req.body.location),
-    action: action,
-    distanceFromOffice: distanceFromOffice,
-    createdAt: Date.now(),
-    updatedAt: Date.now(),
-  };
-
   try {
+    const office = req.user.data.Office;
+    const officeLocation = {
+      longitude: parseFloat(office.longitude),
+      latitude: parseFloat(office.latitude),
+    };
+    const distanceFromOffice = checkDistance(
+      req.body.checkOutLocation,
+      officeLocation
+    );
+    if (!isLocationValid(distanceFromOffice)) {
+      res.status(400);
+      return res.json({
+        status: "error",
+        message:
+          "jarak terlalu jauh dari kantor, jarak anda sebesar: " +
+          distanceFromOffice +
+          " m",
+      });
+    }
+
     //Execute query register
-    const employeeCheckOut = await StaffAttendance.create(data);
+    const today = new Date().toISOString().slice(0, 10);
+
+    const checkInData = await StaffAttendance.findOne({
+      where: {
+        $and: Sequelize.where(
+          Sequelize.fn("date", Sequelize.col("checkInTime")),
+          "=",
+          today
+        ),
+        employeeId: req.user.data.id,
+      },
+    });
+    
+    if (!checkInData) {
+      throw new Error("Tidak ada data Check-In pada hari ini");
+    }
+    //Define data parameter for register to database
+    const workingHour= calculateWorkingHour(checkInData.checkInTime, req.body.checkOutTime);
+    const data = {
+      employeeId: req.user.data.id,
+      checkOutTime: req.body.checkOutTime,
+      checkOutLocation: JSON.stringify(req.body.checkOutLocation),
+      workingHour: workingHour,
+      updatedAt: Date.now(),
+    };
+
+    const employeeCheckOut = await StaffAttendance.update(data, {where: {id: checkInData.id}});
 
     return res.json({
       status: "success",
       data: {
-        id: employeeCheckOut.id,
+        id: employeeCheckOut.employeeId,
       },
     });
   } catch (err) {
@@ -79,7 +92,7 @@ module.exports = async (req, res) => {
     res.status(500);
     return res.json({
       status: "error",
-      message: "gagal melakukan check-out",
+      message: err.message ? err.message : "gagal melakukan check-out",
     });
   }
 };

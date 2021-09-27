@@ -16,6 +16,8 @@ module.exports={
     "host": DB_HOSTNAME,
     "port": DB_PORT,
     "dialect": "mysql",
+    logging: console.log,
+
     dialectOptions: {
       connectTimeout: 120000
     }
