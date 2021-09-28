@@ -10,7 +10,8 @@ module.exports = async (req, res) =>{
         email: { type: "email", empty:false},
         password: { type: "string", min: 6, optional: false} ,
         confirmpassword: { type: "equal", field: "password", optional: false },
-        role: { type: "string", items: "string", enum: [ "admin", "employee"], optional: true}
+        role: { type: "string", items: "string", enum: [ "admin", "employee"], optional: true},
+        status: { type: "boolean", convert: true, optional: true, empty:false}
     }
 
     const validate= v.validate(req.body, schema);
@@ -42,12 +43,16 @@ module.exports = async (req, res) =>{
     //isAdmin
     const role = req.body.role;
 
+    //Status
+    const status = req.body.status;
+
     //Define data parameter for register to database
     const data= {
         name: req.body.name,
         email: req.body.email,
         password, 
-        role
+        role,
+        status
     };
 
     //Execute query register

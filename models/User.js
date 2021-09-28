@@ -59,5 +59,13 @@ module.exports = (sequelize, DataTypes) =>{
           foreignKey: 'create_uid',
         })
       };
+
+    User.associate = function(models) {
+        // associations can be defined here
+        User.belongsTo(models.Office, {
+          foreignKey: 'office_id',
+          onDelete: 'CASCADE'
+        })
+      };
     return User;
 }
