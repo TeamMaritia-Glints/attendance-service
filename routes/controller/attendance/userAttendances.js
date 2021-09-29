@@ -4,12 +4,30 @@ const { StaffAttendance, User } = require("../../../models"); // Call Model Staf
 const Sequelize = require("sequelize");
 
 module.exports = async (req, res) => {
-  const id = req.params.id;
-  const user_id = req.user.data.id;
-
+  const schema = {
+    year: {
+      type: "number",
+      default: new Date().getFullYear(),
+      optional: true,
+      convert: true,
+    },
+    month: {
+      type: "number",
+      default: new Date().getMonth(),
+      optional: true,
+      convert: true,
+    },
+    day: {
+      type: "number",
+      default: new Date().getDay(),
+      optional: true,
+      convert: true,
+    },
+  };
   //Get data user attendances
-
-  const today = new Date().toISOString().slice(0, 10);
+  const day = req.query.day;
+  const month = req.query.month;
+  const year = req.query.year;
 
   const userAttendances = await StaffAttendance.findAll({
     attributes: [
@@ -25,13 +43,13 @@ module.exports = async (req, res) => {
       model: User,
       attributes: ["name", "email", "role"],
     },
-    where: Sequelize.where(
-      Sequelize.fn("date", Sequelize.col("checkInTime")),
-      "=",
-      today
-    ),
-    //group:employeeId,
-    //raw: true,
+    where: {
+      [Sequelize.Op.and]: [
+        Sequelize.where(Sequelize.literal(`day(checkInTime)`), day),
+        Sequelize.where(Sequelize.literal(`month(checkInTime)`), month),
+        Sequelize.where(Sequelize.literal(`year(checkInTime)`), year),
+      ],
+    },
   });
 
   res.status(200);

@@ -7,11 +7,15 @@ const calculateWorkingHour = require("./calculateWorkingHour");
 const { Office } = require("../../../models");
 const Sequelize = require("sequelize");
 
-
 module.exports = async (req, res) => {
   //Validate Data
   const schema = {
-    checkOutTime: { type: "date", default: new Date() , optional: true, convert: true },
+    checkOutTime: {
+      type: "date",
+      default: new Date(),
+      optional: true,
+      convert: true,
+    },
     checkOutLocation: {
       type: "object",
       strict: true,
@@ -53,24 +57,27 @@ module.exports = async (req, res) => {
     }
 
     //Execute query register
-    const today = new Date().toISOString().slice(0, 10);
+    const checkOutDay = new Date(req.body.checkOutTime).toISOString().slice(0, 10);
 
     const checkInData = await StaffAttendance.findOne({
       where: {
         $and: Sequelize.where(
           Sequelize.fn("date", Sequelize.col("checkInTime")),
           "=",
-          today
+          checkOutDay
         ),
         employeeId: req.user.data.id,
       },
     });
-    
+
     if (!checkInData) {
       throw new Error("Tidak ada data Check-In pada hari ini");
     }
     //Define data parameter for register to database
-    const workingHour= calculateWorkingHour(checkInData.checkInTime, req.body.checkOutTime);
+    const workingHour = calculateWorkingHour(
+      checkInData.checkInTime,
+      req.body.checkOutTime
+    );
     const data = {
       employeeId: req.user.data.id,
       checkOutTime: req.body.checkOutTime,
@@ -79,7 +86,16 @@ module.exports = async (req, res) => {
       updatedAt: Date.now(),
     };
 
-    const employeeCheckOut = await StaffAttendance.update(data, {where: {id: checkInData.id}});
+    const employeeCheckOut = await StaffAttendance.update(data, {
+      where: {
+        $and: Sequelize.where(
+          Sequelize.fn("date", Sequelize.col("checkInTime")),
+          "=",
+          checkOutDay
+        ),
+        id: checkInData.id,
+      },
+    });
 
     return res.json({
       status: "success",
