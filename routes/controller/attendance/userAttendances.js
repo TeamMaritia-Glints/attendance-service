@@ -6,10 +6,15 @@ const Sequelize = require("sequelize");
 module.exports = async (req, res) => {
   const id = req.params.id;
   const user_id = req.user.data.id;
+  const reqDate = req.query.date;
 
   //Get data user attendances
-
-  const today = new Date().toISOString().slice(0, 10);
+  let pickedDate;
+  if (reqDate) {
+    pickedDate = new Date(reqDate).toISOString().slice(0, 10);
+  } else {
+    pickedDate = new Date().toISOString().slice(0, 10);
+  }
 
   const userAttendances = await StaffAttendance.findAll({
     attributes: [
@@ -28,7 +33,7 @@ module.exports = async (req, res) => {
     where: Sequelize.where(
       Sequelize.fn("date", Sequelize.col("checkInTime")),
       "=",
-      today
+      pickedDate
     ),
     //group:employeeId,
     //raw: true,
