@@ -56,7 +56,7 @@ module.exports = async (req, res) => {
         ],
       },     
       group: "employeeId",
-      having: Sequelize.literal(`${weekdays} - COUNT(employeeId) > 0`)
+      having: Sequelize.literal(`COUNT(employeeId) < ${weekdays}-3`)
     });
 
     return res.json({

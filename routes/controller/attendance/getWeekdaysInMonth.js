@@ -1,10 +1,10 @@
 function daysInMonth(month, year)
     {
-    return 32 - new Date(year, month, 32).getDate();
+    return 32 - new Date(year, month-1, 32).getDate();
     }
 
 function isWeekday(year, month, day) {
-  var day = new Date(year, month, day).getDay();
+  var day = new Date(year, month-1, day).getDay();
   return day != 0 && day != 6;
 }
 
