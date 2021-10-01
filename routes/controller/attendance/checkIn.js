@@ -4,11 +4,19 @@ const { StaffAttendance } = require("../../../models"); // Call Model StaffAtten
 const checkDistance = require("./checkDistance");
 const isLocationValid = require("./isLocationValid");
 const { Office } = require("../../../models");
+const Sequelize = require("sequelize");
+const formatDistance = require("../../../utils/formatDistance");
 
 module.exports = async (req, res) => {
+  const id = req.user.data.id;
   //Validate Data
   const schema = {
-    checkInTime: { type: "date", default: Date.now(), optional: true, convert: true },
+    checkInTime: {
+      type: "date",
+      default: Date.now(),
+      optional: true,
+      convert: true,
+    },
     checkInLocation: {
       type: "object",
       strict: true,
@@ -28,16 +36,30 @@ module.exports = async (req, res) => {
     });
   }
 
-  // const office = await Office.findOne({
-  //   order: [
-  //     ['id']
-  //   ]
-  // });
-
   try {
+    const checkInDay = new Date(req.body.checkInTime)
+      .toISOString()
+      .slice(0, 10);
+    const passCheckInDataIsExist = await StaffAttendance.findOne({
+      where: {
+        $and: Sequelize.where(
+          Sequelize.fn("date", Sequelize.col("checkInTime")),
+          "=",
+          checkInDay
+        ),
+        employeeId: id,
+      },
+    });
+    
+    if (passCheckInDataIsExist) {
+      res.status(403);
+      return res.json({
+        status: "error",
+        message: "Anda Telah Melakukan Check-in",
+      });
+    }
     //Execute query register
     const office = req.user.data.Office;
-    //console.log(office);
     const officeLocation = {
       longitude: parseFloat(office.longitude),
       latitude: parseFloat(office.latitude),
@@ -54,8 +76,7 @@ module.exports = async (req, res) => {
         status: "error",
         message:
           "jarak terlalu jauh dari kantor, jarak anda sebesar: " +
-          distanceFromOffice +
-          " m",
+          formatDistance(distanceFromOffice),
       });
     }
 
