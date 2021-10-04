@@ -8,8 +8,6 @@ module.exports = async (req, res) =>{
     //Validate Data
     const schema = {
         name: { type: "string", optional: true, empty:false},
-        password: { type: "string", min: 6, optional: true, empty:false} ,
-        confirmpassword: { type: "equal", field: "password", optional: true, empty:false },
         role: { type: "string", items: "string", enum: [ "admin", "employee"], optional: true},
         status: { type: "boolean", convert: true, optional: true, empty:false},
         active: { type: "boolean", convert: true, optional: true, empty:false},
@@ -27,18 +25,20 @@ module.exports = async (req, res) =>{
     }
 
     //Check Office ID
-    const office_id = req.body.office_id;
-    //Get data office
-    const office = await Office.findOne({
-        where: { id: office_id},
-    });
-
-    //Return Message Error
-    if(!office){
-        return res.status(409).json({
-            status: 'error',
-            message: 'Office not found'
+    if(req.body.office_id){
+        const officeId = req.body.office_id;
+        //Get data office
+        const office = await Office.findOne({
+            where: { id: officeId},
         });
+
+        //Return Message Error
+        if(!office){
+            return res.status(409).json({
+                status: 'error',
+                message: 'Office not found'
+            });
+        }
     }
 
     //Check user ID
@@ -57,17 +57,17 @@ module.exports = async (req, res) =>{
         });
     }
 
-    //Variable hash password
-    const password = await bcrypt.hash(req.body.password, 10);
 
     //Execute query update
+    const {
+        name, role, status, active, office_id
+    } = req.body;
     await user.update({
-        name: req.body.name,
-        password: password,
-        role: req.body.role,
-        status: req.body.status,
-        active: req.body.active,
-        office_id: req.body.office_id,
+        name,
+        role,
+        status,
+        active,
+        office_id,
     });
 
     return res.json({
