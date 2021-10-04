@@ -9,6 +9,8 @@ const checkInController = require('./controller/attendance'); //Import Controlle
 router.post("/check-in", verifyToken, checkInController.checkIn);
 router.post("/check-out", verifyToken, checkInController.checkOut);
 
+router.patch("/update-attendance-status",verifyToken, role("admin"), checkInController.updateAttendanceStatus);
+
 router.get("/user-attendances", verifyToken, role("admin"), checkInController.userAttendances);
 router.get("/employee-absence-report", verifyToken, role("admin"), checkInController.employeeAbsenceReport);
 router.get("/user-attendance-report", verifyToken, checkInController.userAttendanceReport);

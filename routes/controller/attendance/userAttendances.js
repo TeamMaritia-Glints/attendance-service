@@ -24,37 +24,57 @@ module.exports = async (req, res) => {
       convert: true,
     },
   };
-  //Get data user attendances
-  const day = req.query.day;
-  const month = req.query.month;
-  const year = req.query.year;
 
-  const userAttendances = await StaffAttendance.findAll({
-    attributes: [
-      "employeeId",
-      "checkInTime",
-      "checkInLocation",
-      "checkOutTime",
-      "checkOutLocation",
-      "workingHour",
-      "workingHourView",
-    ],
-    include: {
-      model: User,
-      attributes: ["name", "email", "role"],
-    },
-    where: {
-      [Sequelize.Op.and]: [
-        Sequelize.where(Sequelize.literal(`day(checkInTime)`), day),
-        Sequelize.where(Sequelize.literal(`month(checkInTime)`), month),
-        Sequelize.where(Sequelize.literal(`year(checkInTime)`), year),
+  const validate = v.validate(req.body, schema);
+  if (validate.length) {
+    return res.status(400).json({
+      status: "error",
+      message: validate,
+    });
+  }
+  try {
+    //Get data user attendances
+    const day = req.query.day;
+    const month = req.query.month;
+    const year = req.query.year;
+
+    const userAttendances = await StaffAttendance.findAll({
+      attributes: [
+        "id",
+        "employeeId",
+        "checkInTime",
+        "checkInLocation",
+        "checkOutTime",
+        "checkOutLocation",
+        "workingHour",
+        "workingHourView",
+        "status",
       ],
-    },
-  });
+      include: {
+        model: User,
+        attributes: ["name", "email", "role"],
+      },
+      where: {
+        [Sequelize.Op.and]: [
+          Sequelize.where(Sequelize.literal(`day(checkInTime)`), day),
+          Sequelize.where(Sequelize.literal(`month(checkInTime)`), month),
+          Sequelize.where(Sequelize.literal(`year(checkInTime)`), year),
+        ],
+      },
+    });
 
-  res.status(200);
-  return res.json({
-    status: "success",
-    data: userAttendances,
-  });
+    res.status(200);
+    return res.json({
+      status: "success",
+      data: userAttendances,
+    });
+
+  } catch (err) {
+    console.log(err);
+    res.status(500);
+    return res.json({
+      status: "error",
+      message: "gagal mengambil data all user atendances",
+    });
+  }
 };
