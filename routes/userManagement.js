@@ -15,8 +15,4 @@ router.get('/', userManagementController.getAll);
 /* Update userManagement . */
 router.put('/:id', role("admin"), userManagementController.update);
 
-/* Delete userManagement . */
-router.delete('/:id', role("admin"), userManagementController.destroy);
-
-
 module.exports = router;
