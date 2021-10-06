@@ -41,13 +41,22 @@ module.exports = async (req, res) => {
           "date",
         ],
         [
-          Sequelize.fn("date_format", Sequelize.col("checkInTime"), "%H:%m:%S"),
+          Sequelize.fn(
+            "date_format",
+            Sequelize.literal(
+              `CONVERT_TZ(checkInTime, @@session.time_zone, '+07:00')`
+            ),
+            "%H:%m:%S"
+          ),
           "checkInTime",
         ],
+
         [
           Sequelize.fn(
             "date_format",
-            Sequelize.col("checkOutTime"),
+            Sequelize.literal(
+              `CONVERT_TZ(checkOutTime, @@session.time_zone, '+07:00')`
+            ),
             "%H:%m:%S"
           ),
           "checkOutTime",
