@@ -28,7 +28,7 @@ module.exports = async (req, res) => {
   };
 
   const validate = v.validate(req.body, schema);
-
+  console.log(req.body.checkInTime);
   if (validate.length) {
     return res.status(400).json({
       status: "error",
@@ -89,6 +89,7 @@ module.exports = async (req, res) => {
     }
 
     //Define data parameter for register to database
+
     const data = {
       employeeId: req.user.data.id,
       checkInTime: req.body.checkInTime,
