@@ -37,6 +37,14 @@ module.exports = async (req, res) => {
   }
 
   try {
+    const office = req.user.data.Office;
+    if (!office) {
+      res.status(404);
+      return res.json({
+        status: "error",
+        message: "Anda Belum Terdaftar di Kantor Manapun",
+      });
+    }
     const checkInDay = new Date(req.body.checkInTime)
       .toISOString()
       .slice(0, 10);
@@ -50,7 +58,7 @@ module.exports = async (req, res) => {
         employeeId: id,
       },
     });
-    
+
     if (passCheckInDataIsExist) {
       res.status(403);
       return res.json({
@@ -59,7 +67,7 @@ module.exports = async (req, res) => {
       });
     }
     //Execute query register
-    const office = req.user.data.Office;
+
     const officeLocation = {
       longitude: parseFloat(office.longitude),
       latitude: parseFloat(office.latitude),
@@ -95,6 +103,7 @@ module.exports = async (req, res) => {
       data: {
         id: employeeCheckIn.id,
       },
+      message: "Anda Berhasil Melakukan Check-in",
     });
   } catch (err) {
     console.log(err);

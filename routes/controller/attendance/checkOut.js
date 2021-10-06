@@ -41,6 +41,21 @@ module.exports = async (req, res) => {
     const checkOutDay = new Date(req.body.checkOutTime)
       .toISOString()
       .slice(0, 10);
+    const checkInData = await StaffAttendance.findOne({
+      where: {
+        $and: Sequelize.where(
+          Sequelize.fn("date", Sequelize.col("checkInTime")),
+          "=",
+          checkOutDay
+        ),
+        employeeId: req.user.data.id,
+      },
+    });
+
+    if (!checkInData) {
+      throw new Error("Anda Belum Check-in Hari Ini");
+    }
+
     const passCheckOutDataIsExist = await StaffAttendance.findOne({
       where: {
         $and: Sequelize.where(
@@ -51,6 +66,7 @@ module.exports = async (req, res) => {
         employeeId: id,
       },
     });
+
     if (passCheckOutDataIsExist) {
       res.status(403);
       return res.json({
@@ -58,7 +74,6 @@ module.exports = async (req, res) => {
         message: "Anda Telah Melakukan Check-out",
       });
     }
-
     const office = req.user.data.Office;
     const officeLocation = {
       longitude: parseFloat(office.longitude),
@@ -79,20 +94,7 @@ module.exports = async (req, res) => {
     }
 
     //Execute query register
-    const checkInData = await StaffAttendance.findOne({
-      where: {
-        $and: Sequelize.where(
-          Sequelize.fn("date", Sequelize.col("checkInTime")),
-          "=",
-          checkOutDay
-        ),
-        employeeId: req.user.data.id,
-      },
-    });
 
-    if (!checkInData) {
-      throw new Error("Tidak ada data Check-In pada hari ini");
-    }
     //Define data parameter for register to database
     const workingHour = calculateWorkingHour(
       checkInData.checkInTime,
@@ -122,6 +124,7 @@ module.exports = async (req, res) => {
       data: {
         id: employeeCheckOut.employeeId,
       },
+      message: "Anda Berhasil Melakukan Check-out",
     });
   } catch (err) {
     console.log(err);
