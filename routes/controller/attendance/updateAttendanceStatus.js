@@ -35,6 +35,7 @@ module.exports = async (req, res) => {
     return res.json({
       status: "success",
       data: updatedAttendance,
+      message: "status berhasil diupdate",
     });
   } catch (err) {
     console.log(err);
