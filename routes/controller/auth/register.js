@@ -62,7 +62,8 @@ module.exports = async (req, res) =>{
         status:'success',
         data: {
             id: createUser.id
-        }
+        },
+        message:'Register Successful!'
     });
 
 }

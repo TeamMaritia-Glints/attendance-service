@@ -72,7 +72,8 @@ module.exports = async (req, res) =>{
 
     return res.json({
         status:'success',
-        data: user
+        data: user,
+        message:'Data User Updated!'
     });
 
 }

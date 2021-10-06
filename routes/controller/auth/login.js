@@ -94,6 +94,7 @@ module.exports = async (req, res) =>{
         status: 'success',
         token,
         refresh_token,
+        message:'Login Successful!'
     })
 
 }
