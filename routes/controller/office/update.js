@@ -50,7 +50,8 @@ module.exports = async (req, res) =>{
 
     return res.json({
         status:'success',
-        data: office
+        data: office,
+        message: 'Data Office Updated!'
     });
 
 }
